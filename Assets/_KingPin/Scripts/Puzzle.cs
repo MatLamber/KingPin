@@ -22,7 +22,7 @@ public class Puzzle : MonoBehaviour, MMEventListener<PinMovement>
 
     IEnumerator EndPhase()
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2f);
         GameManager.Instance.OnPuzzlePhaseComplete();
     }
     public void OnMMEvent(PinMovement eventType)

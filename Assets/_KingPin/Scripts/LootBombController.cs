@@ -9,6 +9,7 @@ public class LootBombController : MonoBehaviour
     [SerializeField] private float scaleMultiplier;
     [SerializeField] private GameObject bomb;
     [SerializeField] private GameObject explosion;
+    [SerializeField] private GameObject explosion2D;
     [SerializeField] private ParticleSystem explosionParticle;
 
     [SerializeField] private float graceTime = 3.0f; // Tiempo de gracia después de registrar los colliders iniciales
@@ -49,6 +50,16 @@ public class LootBombController : MonoBehaviour
         if (checkForNewCollisions && !initialColliders.Contains(collision.collider) && !isIgniteMode)
         {
             OnIgnite();
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("MoneyCollector"))
+        {
+            bomb.SetActive(false);
+            explosionParticle.Play();
+            explosion2D.SetActive(true);
         }
     }
 
