@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using MoreMountains.Feedbacks;
@@ -57,10 +58,21 @@ public class LootBombController : MonoBehaviour
     {
         if (other.CompareTag("MoneyCollector"))
         {
+            GetComponent<Rigidbody>().isKinematic = true;
+            DOTween.Kill(transform);
+            transform.position = other.transform.position; 
             bomb.SetActive(false);
             explosionParticle.Play();
             explosion2D.SetActive(true);
+            StartCoroutine(DisableBomb());
+
         }
+    }
+
+    IEnumerator DisableBomb()
+    {
+        yield return new WaitForSeconds(0.1f);
+        explosion2D.SetActive(false);
     }
 
     private void OnIgnite()
