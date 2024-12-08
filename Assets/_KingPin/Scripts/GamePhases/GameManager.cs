@@ -11,7 +11,7 @@ namespace MoreMountains.TopDownEngine
     public class GameManager : MMPersistentSingleton<GameManager>,
         MMEventListener<MMGameEvent>,
         MMEventListener<TopDownEngineEvent>,
-        MMEventListener<TopDownEnginePointEvent>, MMEventListener<EnemyDeath>
+        MMEventListener<TopDownEnginePointEvent>, MMEventListener<EnemyDeath>, MMEventListener<PlayerDeath>
     {
         [Tooltip("the target frame rate for the game")]
         public int TargetFrameRate = 300;
@@ -45,7 +45,7 @@ namespace MoreMountains.TopDownEngine
         protected int _initialCurrentLives;
 
         private GamePhase currentPhase;
-       [SerializeField] private List<Enemy> activeEnemies;
+        [SerializeField] private List<Enemy> activeEnemies;
         private bool playerIsAlive;
 
         protected override void Awake()
@@ -105,10 +105,6 @@ namespace MoreMountains.TopDownEngine
             if (playerIsAlive)
             {
                 TransitionToPhase(new PlayerTurnPhase());
-            }
-            else
-            {
-                StartTravelPhase();
             }
         }
 
@@ -356,6 +352,16 @@ namespace MoreMountains.TopDownEngine
         {
             activeEnemies.Remove(deadEnemy);
         }
+        
+        public void OnPlayerDeath()
+        {
+            KillPlayer();
+        }
+
+        public bool GetPlayerStatus()
+        {
+            return  playerIsAlive;
+        }
 
         public virtual void OnMMEvent(MMGameEvent gameEvent)
         {
@@ -425,6 +431,14 @@ namespace MoreMountains.TopDownEngine
             if(activeEnemies.Contains(eventType.EnemyScript))
                 OnEnemyDeath(eventType.EnemyScript);
         }
+        
+        
+        public void OnMMEvent(PlayerDeath eventType)
+        {
+            KillPlayer();
+        }
+
+  
 
         protected virtual void OnEnable()
         {
@@ -432,6 +446,7 @@ namespace MoreMountains.TopDownEngine
             this.MMEventStartListening<TopDownEngineEvent>();
             this.MMEventStartListening<TopDownEnginePointEvent>();
             this.MMEventStartListening<EnemyDeath>();
+            this.MMEventStartListening<PlayerDeath>();
         }
 
         protected virtual void OnDisable()
@@ -439,7 +454,7 @@ namespace MoreMountains.TopDownEngine
             this.MMEventStopListening<MMGameEvent>();
             this.MMEventStopListening<TopDownEngineEvent>();
             this.MMEventStopListening<TopDownEnginePointEvent>();
-            this.MMEventStopListening<EnemyDeath>();
+            this.MMEventStopListening<PlayerDeath>();
         }
 
 

@@ -140,6 +140,15 @@ public struct EnemyDeath
         MMEventManager.TriggerEvent(e);              
     }
 }
+
+public struct PlayerDeath
+{
+    public static PlayerDeath e;
+    public static void Trigger()
+    {
+        MMEventManager.TriggerEvent(e);              
+    }
+}
 public class EventManager
 {
         

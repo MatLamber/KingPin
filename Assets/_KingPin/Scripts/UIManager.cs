@@ -12,7 +12,7 @@ using UnityEngine.EventSystems;
 /// Handles all GUI effects and changes
 /// </summary>
 [AddComponentMenu("TopDown Engine/Managers/GUI Manager")]
-public class UIManager : MMSingleton<UIManager>, MMEventListener<UpgradePhaseStarted>
+public class UIManager : MMSingleton<UIManager>, MMEventListener<UpgradePhaseStarted>, MMEventListener<PlayerDeath>
 {
     /// the main canvas
     [Tooltip("the main canvas")] public Canvas MainCanvas;
@@ -20,6 +20,9 @@ public class UIManager : MMSingleton<UIManager>, MMEventListener<UpgradePhaseSta
 
     [SerializeField] private GameObject upgradesPanel;
     private Vector3 upgradesPanelOriginalPosition;
+
+    [SerializeField] private GameObject winPanel;
+    [SerializeField] private GameObject losePanel;
 
     /// <summary>
     /// Statics initialization to support enter play modes
@@ -73,15 +76,38 @@ public class UIManager : MMSingleton<UIManager>, MMEventListener<UpgradePhaseSta
     {
         OnUpgradePhaseStarted();
     }
+    
+    
+    public void ShowLosePanel()
+    {
+        StartCoroutine(ShowLosePanelCo());
+    }
+    IEnumerator ShowLosePanelCo()
+    {
+        yield return new WaitForSeconds(1f);
+        losePanel.SetActive(true);
+    }
 
+    public void OnPlayerDeath()
+    {
+        ShowLosePanel();
+    }
+    public void OnMMEvent(PlayerDeath eventType)
+    {
+        OnPlayerDeath();
+    }
 
     private void OnEnable()
     {
         this.MMEventStartListening<UpgradePhaseStarted>();
+        this.MMEventStartListening<PlayerDeath>();
     }
 
     private void OnDisable()
     {
         this.MMEventStopListening<UpgradePhaseStarted>();
+        this.MMEventStopListening<PlayerDeath>();
     }
+
+
 }

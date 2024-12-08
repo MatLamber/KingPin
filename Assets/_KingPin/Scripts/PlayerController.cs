@@ -28,6 +28,16 @@ public class PlayerController : MonoBehaviour,MMEventListener<PlayerTurnStarted>
         EndTurn();
     }
 
+    public void OnDeath()
+    {
+        TriggerDeathEvent();
+    }
+
+    public void TriggerDeathEvent()
+    {
+        PlayerDeath.Trigger();
+    }
+
     public void OnMMEvent(PlayerTurnStarted eventType)
     {
         TakeTurn();

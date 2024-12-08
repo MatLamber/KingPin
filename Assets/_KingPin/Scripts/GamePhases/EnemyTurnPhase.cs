@@ -26,7 +26,7 @@ public class EnemyTurnPhase : GamePhase
 
     public override void UpdatePhase()
     {
-        if (IsEnemyTurnFinished())
+        if (IsEnemyTurnFinished() && GameManager.Instance.GetPlayerStatus())
         {
             _currentEnemyIndex++;
             if (_currentEnemyIndex < _enemies.Count)
