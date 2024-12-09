@@ -39,5 +39,6 @@ public class LootController : MonoBehaviour
     {
         transform.localScale = originalScale;
         rigidbody.isKinematic = false;
+        LootInteraction.Trigger(this.transform);
     }
 }

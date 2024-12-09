@@ -149,6 +149,27 @@ public struct PlayerDeath
         MMEventManager.TriggerEvent(e);              
     }
 }
+
+public struct LootInteraction
+{
+    public static LootInteraction e;
+    public Transform LootTransform;
+    public static void Trigger(Transform lootTransform)
+    {
+        e.LootTransform = lootTransform;
+        MMEventManager.TriggerEvent(e);              
+    }
+}
+
+
+public struct LootPoolEmptied
+{
+    public static LootPoolEmptied e;
+    public static void Trigger()
+    {
+        MMEventManager.TriggerEvent(e);              
+    }
+}
 public class EventManager
 {
         

@@ -19,6 +19,7 @@ public class LootBombController : MonoBehaviour
     private bool isIgniteMode = false;
     private bool checkForNewCollisions = false;
     private float elapsedTime = 0.0f;
+    private bool hasExploded;
 
     private void Start()
     {
@@ -58,6 +59,8 @@ public class LootBombController : MonoBehaviour
     {
         if (other.CompareTag("MoneyCollector"))
         {
+            if(hasExploded) return;
+            hasExploded = true;
             GetComponent<Rigidbody>().isKinematic = true;
             DOTween.Kill(transform);
             transform.position = other.transform.position; 
@@ -77,6 +80,7 @@ public class LootBombController : MonoBehaviour
 
     private void OnIgnite()
     {
+        if(hasExploded) return;
         isIgniteMode = true;
         Debug.Log("La bomba estalla.");
         igniteFeedBack?.PlayFeedbacks();
@@ -85,6 +89,8 @@ public class LootBombController : MonoBehaviour
             bomb.SetActive(false);
             explosionParticle.Play();
             explosion.SetActive(true);
+            hasExploded = true;
+            
         });
         // Opcional: Desactiva el script o realiza otras acciones post-explosión
     }
