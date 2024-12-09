@@ -11,7 +11,7 @@ public class LootBombController : MonoBehaviour
     [SerializeField] private GameObject bomb;
     [SerializeField] private GameObject explosion;
     [SerializeField] private GameObject explosion2D;
-    [SerializeField] private ParticleSystem explosionParticle;
+    [SerializeField] private MMF_Player explosionFeedback;
 
     [SerializeField] private float graceTime = 3.0f; // Tiempo de gracia después de registrar los colliders iniciales
 
@@ -57,15 +57,15 @@ public class LootBombController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("MoneyCollector"))
+        if (other.CompareTag("PickeablesZone"))
         {
             if(hasExploded) return;
             hasExploded = true;
             GetComponent<Rigidbody>().isKinematic = true;
             DOTween.Kill(transform);
             transform.position = other.transform.position; 
+            explosionFeedback.PlayFeedbacks();
             bomb.SetActive(false);
-            explosionParticle.Play();
             explosion2D.SetActive(true);
             StartCoroutine(DisableBomb());
 
@@ -86,8 +86,9 @@ public class LootBombController : MonoBehaviour
         igniteFeedBack?.PlayFeedbacks();
         transform.DOScale(transform.localScale * scaleMultiplier, 2f).OnComplete(() =>
         {
+            explosionFeedback.PlayFeedbacks();
             bomb.SetActive(false);
-            explosionParticle.Play();
+
             explosion.SetActive(true);
             hasExploded = true;
             
