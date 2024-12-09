@@ -17,19 +17,27 @@ public class ExplosionController : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
         gameObject.SetActive(false);
     }
+
     private void OnTriggerEnter(Collider other)
     {
         // Check if the object has the specified tag for deactivation
         if (other.CompareTag(lootTagName))
         {
-            // Check for an object with a blocking tag between the collider center and the object
+            // Calculate direction from this object to the target
             Vector3 direction = other.transform.position - transform.position;
-            if (!Physics.Raycast(transform.position, direction, out RaycastHit hit, direction.magnitude) || 
-                hit.collider.CompareTag(blockingTag) == false)
+            // Cast a ray to see if there's any object with the blocking tag in the way
+            if (Physics.Raycast(transform.position, direction, out RaycastHit hit, direction.magnitude))
             {
-                // Deactivate the object
-                other.gameObject.SetActive(false);
+                Debug.Log($"Hit {hit.collider.name}");
+                // If a hit is found and it's not the target itself, check if it's a blocker
+                if (hit.collider.CompareTag(blockingTag))
+                {
+                    return; // Do not deactivate, a blocker is in the way
+                }
             }
+
+            // No blockers found, deactivate the object
+            other.gameObject.SetActive(false);
         }
     }
 }

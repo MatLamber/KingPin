@@ -37,8 +37,9 @@ public class LootController : MonoBehaviour
 
     private void OnDisable()
     {
+        LootInteraction.Trigger(this.transform);
         transform.localScale = originalScale;
         rigidbody.isKinematic = false;
-        LootInteraction.Trigger(this.transform);
+
     }
 }
