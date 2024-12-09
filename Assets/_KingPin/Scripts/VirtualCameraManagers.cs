@@ -7,26 +7,22 @@ public class VirtualCameraManagers : MonoBehaviour, MMEventListener<TravelingPha
 {
     [SerializeField] private CinemachineCamera topPartCamera;
     [SerializeField] private CinemachineCamera bottomPartCamera;
-    private ParallaxBackground_0 topParallax;
-    private ParallaxBackground_0 botomParallax;
+    [SerializeField] private ParallaxBackground_0 parallax;
 
     private void Start()
     {
-        topParallax = topPartCamera.gameObject.GetComponent<ParallaxBackground_0>();
-        botomParallax = bottomPartCamera.gameObject.GetComponent<ParallaxBackground_0>();
+
     }
 
 
     public void EnableParallaxMovement()
     {
-        topParallax.CameraMove = true;
-        botomParallax.CameraMove = true;
+        parallax.Camera_Move = true;
     }
 
     public void DisableParallaxMovement()
     {
-        topParallax.CameraMove = false;
-        botomParallax.CameraMove = false;
+        parallax.Camera_Move = false;
     }
 
     public void SetTopCameraAsMain()
