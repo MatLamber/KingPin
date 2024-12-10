@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using DG.Tweening;
 using UnityEngine;
 
@@ -12,8 +13,15 @@ public class LootController : MonoBehaviour
     {
         originalScale = transform.localScale;
         rigidbody = GetComponent<Rigidbody>();
+        StartCoroutine(EnableRigidBody());
     }
 
+
+    IEnumerator EnableRigidBody()
+    {
+        yield return new WaitForSeconds(0.5f);
+        rigidbody.isKinematic = false;
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag(moneyCollectorTag))

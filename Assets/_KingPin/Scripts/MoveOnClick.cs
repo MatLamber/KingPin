@@ -5,42 +5,51 @@ using MoreMountains.Tools;
 
 public class MoveOnClick : MonoBehaviour, MMEventListener<PuzzleSolved>
 {
-   
     [SerializeField] private Vector3 finalPosition;
-
-    // Tiempo que tarda en completar el movimiento
     [SerializeField] private float moveDuration = 1f;
-
     [SerializeField] private bool isRequiredPin;
+    [SerializeField] private bool canReposition; // Nuevo campo para alternar posiciones
 
-    // Indica si el objeto ya está en movimiento
     private bool isMoving = false;
+    private Vector3 initialPosition; // Almacena la posición inicial
 
-    // Método que se activa cuando se hace click en el objeto
+    private void Awake()
+    {
+        // Guarda la posición inicial al iniciar
+        initialPosition = transform.localPosition;
+    }
+
     private void OnMouseDown()
     {
-        // Solo ejecuta la animación si no está ya en movimiento
         if (!isMoving)
         {
             isMoving = true;
-            if(isRequiredPin)
+            if (isRequiredPin)
                 PinMovement.Trigger();
             MoveObject();
         }
     }
 
-    // Método que realiza el movimiento
     private void MoveObject()
     {
-        transform.DOLocalMove(finalPosition, moveDuration);
+        if (canReposition)
+        {
+            // Alterna entre la posición final e inicial
+            Vector3 targetPosition = (transform.localPosition == initialPosition) ? finalPosition : initialPosition;
+            transform.DOLocalMove(targetPosition, moveDuration).OnComplete(() => isMoving = false);
+        }
+        else
+        {
+            // Mueve siempre a la posición final si no puede cambiar de posición
+            transform.DOLocalMove(finalPosition, moveDuration).OnComplete(() => isMoving = false);
+        }
     }
 
-    
     public void OnMMEvent(PuzzleSolved eventType)
     {
         isMoving = true;
     }
-    
+
     private void OnEnable()
     {
         this.MMEventStartListening<PuzzleSolved>();
@@ -51,6 +60,4 @@ public class MoveOnClick : MonoBehaviour, MMEventListener<PuzzleSolved>
         this.MMEventStopListening<PuzzleSolved>();
         isMoving = false;
     }
-
-
 }
