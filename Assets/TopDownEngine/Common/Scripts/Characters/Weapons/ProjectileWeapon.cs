@@ -157,6 +157,17 @@ namespace MoreMountains.TopDownEngine
 					projectile.SetOwner(Owner.gameObject);
 				}
 			}
+			
+			if (projectile != null && DamageUpgradeManager.Instance != null)
+			{
+				// Buscar DamageOnTouch
+				DamageOnTouch damageComponent = projectile.GetComponent<DamageOnTouch>();
+				if (damageComponent != null)
+				{
+					// Aplica el porcentaje de mejora de daño
+					DamageUpgradeManager.Instance.ApplyDamageUpgrade(damageComponent);
+				}
+			}
 			// we activate the object
 			nextGameObject.gameObject.SetActive(true);
 

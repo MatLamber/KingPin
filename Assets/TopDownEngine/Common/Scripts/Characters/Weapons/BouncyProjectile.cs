@@ -38,6 +38,8 @@ namespace MoreMountains.TopDownEngine
 		protected int _randomAmountOfBounces;
 		protected int _bouncesLeft;
 		protected float _randomSpeedModifier;
+		
+		[SerializeField] DamageUpgradeManager _damageUpgradeManager;
         
 		/// <summary>
 		/// On init we randomize our values, refresh our 2D collider because Unity is weird sometimes
@@ -52,8 +54,13 @@ namespace MoreMountains.TopDownEngine
 			{
 				_collider2D.enabled = false;
 				_collider2D.enabled = true;
-			}            
+			}
+			if (TargetDamageOnTouch != null && DamageUpgradeManager.Instance != null)
+			{
+				DamageUpgradeManager.Instance.ApplyDamageUpgrade(TargetDamageOnTouch);
+			}
 		}
+		
 
 		/// <summary>
 		/// On trigger enter 2D, we call our colliding endpoint
