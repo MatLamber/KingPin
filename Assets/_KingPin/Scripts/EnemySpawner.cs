@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using MoreMountains.Tools;
+using MoreMountains.TopDownEngine;
 using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour, MMEventListener<TravelingPhaseStarted>
@@ -10,14 +11,23 @@ public class EnemySpawner : MonoBehaviour, MMEventListener<TravelingPhaseStarted
     [SerializeField] private List<GameObject> enemiesFormation;
     private int currentEnemysFormation;
 
+    private void Start()
+    {
+        if(GameManager.Instance is not null)
+            GameManager.Instance.InitializeEnemies(enemiesFormation);
+    }
 
     IEnumerator SendNextEnemieFormation()
+{
+    yield return new WaitForSeconds(1.7f);
+
+    for(int i = 0; i < enemiesFormation.Count; i++)
     {
-        yield return new WaitForSeconds(1.7f);
-        if(currentEnemysFormation < enemiesFormation.Count)
-            enemiesFormation[currentEnemysFormation].SetActive(true);
-        currentEnemysFormation++;
+        enemiesFormation[i].SetActive(i == currentEnemysFormation);
     }
+
+    currentEnemysFormation++;
+}
 
     public void OnTravelingPhaseStarted()
     {

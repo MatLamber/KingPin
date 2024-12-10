@@ -170,6 +170,15 @@ public struct LootPoolEmptied
         MMEventManager.TriggerEvent(e);              
     }
 }
+
+public struct EnemyFormationDefetead
+{
+    public static EnemyFormationDefetead e;
+    public static void Trigger()
+    {
+        MMEventManager.TriggerEvent(e);              
+    }
+}
 public class EventManager
 {
         

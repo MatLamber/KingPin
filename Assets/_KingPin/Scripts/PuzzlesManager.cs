@@ -1,33 +1,48 @@
-using System;
+using System.Collections.Generic;
 using DG.Tweening;
 using MoreMountains.Tools;
 using UnityEngine;
 
-public class PuzzlesManager : MonoBehaviour, MMEventListener<PuzzlePhaseStarted>, MMEventListener<PuzzlePhaseEnded> // < add your events here>
+public class PuzzlesManager : MonoBehaviour, MMEventListener<PuzzlePhaseStarted>, MMEventListener<PuzzlePhaseEnded>
 {
-    [SerializeField] private GameObject currentPuzzle;
+    [SerializeField] private List<GameObject> puzzles;
+    private int currentPuzzleIndex = 0;
     private Vector3 originalPosition;
 
     private void Start()
     {
-        originalPosition = currentPuzzle.transform.localPosition;
+        if (puzzles == null || puzzles.Count == 0) return;
+
+        // Set the original position from the first puzzle in the list
+        originalPosition = puzzles[currentPuzzleIndex].transform.localPosition;
     }
 
     public void ShowCurrentPuzzle()
     {
+        if (currentPuzzleIndex >= puzzles.Count) return;
+
+        GameObject currentPuzzle = puzzles[currentPuzzleIndex];
         currentPuzzle.SetActive(true);
         currentPuzzle.transform.DOLocalMove(Vector3.zero, 1f).SetEase(Ease.OutBack);
     }
 
     public void HideCurrentPuzzle()
     {
-        currentPuzzle.transform.DOLocalMove(originalPosition, 0.3f).SetEase(Ease.InBack).OnComplete(() => currentPuzzle.SetActive(false));
+        if (currentPuzzleIndex >= puzzles.Count) return;
+
+        GameObject currentPuzzle = puzzles[currentPuzzleIndex];
+        currentPuzzle.transform.DOLocalMove(originalPosition, 0.3f).SetEase(Ease.InBack).OnComplete(() =>
+        {
+            currentPuzzle.SetActive(false);
+            currentPuzzleIndex++;
+        });
     }
+
     public void OnMMEvent(PuzzlePhaseStarted eventType)
     {
         ShowCurrentPuzzle();
     }
-    
+
     public void OnMMEvent(PuzzlePhaseEnded eventType)
     {
         HideCurrentPuzzle();
@@ -44,7 +59,4 @@ public class PuzzlesManager : MonoBehaviour, MMEventListener<PuzzlePhaseStarted>
         this.MMEventStopListening<PuzzlePhaseStarted>();
         this.MMEventStopListening<PuzzlePhaseEnded>();
     }
-
-
-
 }

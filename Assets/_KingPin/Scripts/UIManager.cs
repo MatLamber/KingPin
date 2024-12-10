@@ -82,6 +82,17 @@ public class UIManager : MMSingleton<UIManager>, MMEventListener<UpgradePhaseSta
     {
         StartCoroutine(ShowLosePanelCo());
     }
+    
+    public void ShowWinPanel()
+    {
+        StartCoroutine(ShowWinPanelCo());
+    }
+    
+    IEnumerator ShowWinPanelCo()
+    {
+        yield return new WaitForSeconds(1f);
+        winPanel.SetActive(true);
+    }
     IEnumerator ShowLosePanelCo()
     {
         yield return new WaitForSeconds(1f);

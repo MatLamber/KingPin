@@ -4,6 +4,7 @@ using MoreMountains.Tools;
 using MoreMountains.InventoryEngine;
 using MoreMountains.Feedbacks;
 using MoreMountains.TopDownEngine;
+using NUnit.Framework;
 
 namespace MoreMountains.TopDownEngine
 {
@@ -45,14 +46,17 @@ namespace MoreMountains.TopDownEngine
         protected int _initialCurrentLives;
 
         private GamePhase currentPhase;
-        [SerializeField] private List<Enemy> activeEnemies;
+        [MMReadOnly]
+        private List<Enemy> activeEnemies = new List<Enemy>();
+        [MMReadOnly]
+        private List<GameObject> enemiesInLevel = new List<GameObject>();
+        private int currentEnemyFormation;
         private bool playerIsAlive;
 
         protected override void Awake()
         {
             base.Awake();
             PointsOfEntry = new List<PointsOfEntryStorage>();
-          //  activeEnemies = new List<Enemy>();
             playerIsAlive = true;
         }
 
@@ -61,8 +65,6 @@ namespace MoreMountains.TopDownEngine
             Application.targetFrameRate = TargetFrameRate;
             _initialCurrentLives = CurrentLives;
             _initialMaximumLives = MaximumLives;
-
-            InitializeEnemies();
             StartTravelPhase();
         }
 
@@ -72,10 +74,17 @@ namespace MoreMountains.TopDownEngine
             Invoke(nameof(OnTravelPhaseComplete),2f);
         }
 
-        private void InitializeEnemies()
+        public void InitializeEnemies(List<GameObject> enemiesFormations)
         {
-            /*activeEnemies.Add(new Enemy("Goblin"));
-            activeEnemies.Add(new Enemy("Orc"));*/
+            enemiesInLevel = enemiesFormations;
+            activeEnemies = enemiesInLevel[currentEnemyFormation].GetComponent<EnemyFormation>().Enemies;
+        }
+
+        public void CheckIfShouldContinue()
+        {
+            if (currentEnemyFormation < enemiesInLevel.Count)
+                activeEnemies = enemiesInLevel[currentEnemyFormation].GetComponent<EnemyFormation>().Enemies;
+
         }
 
         private void Update()
@@ -116,7 +125,20 @@ namespace MoreMountains.TopDownEngine
             }
             else
             {
-                StartTravelPhase();
+                if (activeEnemies.Count == 0)
+                {
+                    CheckIfShouldContinue();
+                    if (currentEnemyFormation < enemiesInLevel.Count)
+                    {
+                        StartTravelPhase();
+                    }
+                    else
+                    {
+                        UIManager.Instance.ShowWinPanel();
+                    }
+    ;
+                    EnemyFormationDefetead.Trigger();
+                }
             }
         }
 
@@ -128,7 +150,19 @@ namespace MoreMountains.TopDownEngine
             }
             else
             {
-                 StartTravelPhase();
+                if (activeEnemies.Count == 0)
+                {
+                    CheckIfShouldContinue();
+                    if (currentEnemyFormation < enemiesInLevel.Count)
+                    {
+                        StartTravelPhase();
+                    }
+                    else
+                    {
+                        UIManager.Instance.ShowWinPanel();
+                    }
+                    EnemyFormationDefetead.Trigger();
+                }
             }
         }
 
@@ -140,10 +174,6 @@ namespace MoreMountains.TopDownEngine
         public void EnemyKilled(Enemy enemy)
         {
             activeEnemies.Remove(enemy);
-            if (activeEnemies.Count == 0)
-            {
-                StartTravelPhase();
-            }
         }
 
         public virtual void Reset()
@@ -351,6 +381,7 @@ namespace MoreMountains.TopDownEngine
         public void OnEnemyDeath(Enemy deadEnemy)
         {
             activeEnemies.Remove(deadEnemy);
+            if (activeEnemies.Count == 0) currentEnemyFormation++;
         }
         
         public void OnPlayerDeath()
@@ -362,6 +393,9 @@ namespace MoreMountains.TopDownEngine
         {
             return  playerIsAlive;
         }
+        
+
+
 
         public virtual void OnMMEvent(MMGameEvent gameEvent)
         {
