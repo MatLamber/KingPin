@@ -12,7 +12,7 @@ namespace MoreMountains.Tools
 	/// You can either use a prefab for it, or have the component draw one at the start
 	/// </summary>
 	[AddComponentMenu("More Mountains/Tools/GUI/MM Health Bar")]
-	public class MMHealthBar : MonoBehaviour 
+	public class MMHealthBar : MonoBehaviour
 	{
 		#if MM_UI
 		/// the possible health bar types
@@ -159,6 +159,14 @@ namespace MoreMountains.Tools
 		/// the delay (in seconds) after which to hide the bar
 		[Tooltip("the delay (in seconds) after which to hide the bar")]
 		public float HideBarAtZeroDelay = 1f;
+		
+		[Header("Shield Bar")]
+		[Tooltip("The MMProgressBar component for the shield, which will be updated before health.")]
+		public MMProgressBar ShieldProgressBar;
+		
+		[Header("Test Shield")]
+		public float TestCurrentShield = 25f;
+		public float TestMaxShield = 50f;
 
 		[Header("Test")] 
 		/// a test value to use when pressing the TestUpdateHealth button
@@ -276,6 +284,7 @@ namespace MoreMountains.Tools
 				_progressBar.SetBar(100f, 0f, 100f);
 			}
 		}
+		
 		
 
 		/// <summary>
@@ -485,19 +494,32 @@ namespace MoreMountains.Tools
 		/// <param name="minHealth">Minimum health.</param>
 		/// <param name="maxHealth">Max health.</param>
 		/// <param name="show">Whether or not we should show the bar.</param>
-		public virtual void UpdateBar(float currentHealth, float minHealth, float maxHealth, bool show)
+		public virtual void UpdateBar(float currentHealth, float minHealth, float maxHealth, float currentShield, float maxShield, bool show)
 		{
-			// if the healthbar isn't supposed to be always displayed, we turn it on for the specified duration
+			// si la barra no es siempre visible, la mostramos durante un tiempo específico
 			if (!AlwaysVisible && show)
 			{
 				_showBar = true;
 				_lastShowTimestamp = (TimeScale == TimeScales.UnscaledTime) ? Time.unscaledTime : Time.time;
 			}
 
+			// Actualizar la barra de escudo si existe
+			if (ShieldProgressBar != null)
+			{
+				ShieldProgressBar.UpdateBar(currentShield, 0f, maxShield);
+
+				// Si el escudo llega a 0, asignarlo a 0 y ocultar si es necesario
+				if (currentShield <= 0)
+				{
+					ShieldProgressBar.SetBar(0f, 0f, maxShield);
+				}
+			}
+
+			// Actualizar la barra de salud si existe
 			if (_progressBar != null)
 			{
-				_progressBar.UpdateBar(currentHealth, minHealth, maxHealth)	;
-                
+				_progressBar.UpdateBar(currentHealth, minHealth, maxHealth);
+
 				if (HideBarAtZero && _progressBar.BarTarget <= 0)
 				{
 					StartCoroutine(FinalHideBar());
@@ -509,13 +531,16 @@ namespace MoreMountains.Tools
 				}
 			}
 		}
+		
+		
+		
 
 		/// <summary>
 		/// A test method used to update the bar when pressing the TestUpdateHealth button in the inspector
 		/// </summary>
 		protected virtual void TestUpdateHealth()
 		{
-			UpdateBar(TestCurrentHealth, TestMinHealth, TestMaxHealth, true);
+			UpdateBar(TestCurrentHealth, TestMinHealth, TestMaxHealth, TestCurrentShield, TestMaxShield, true);
 		}
 
 		#endif

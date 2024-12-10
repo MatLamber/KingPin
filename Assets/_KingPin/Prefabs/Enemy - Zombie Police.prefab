@@ -11810,6 +11810,9 @@ MonoBehaviour:
   TargetDamageResistanceProcessor: {fileID: 0}
   TargetAnimator: {fileID: 0}
   DisableAnimatorLogs: 1
+  InitialShield: 0
+  MaximumShield: 0
+  CurrentShield: 0
 --- !u!114 &2118578954629505697
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12019,6 +12022,9 @@ MonoBehaviour:
   DisplayDurationOnHit: 1
   HideBarAtZero: 1
   HideBarAtZeroDelay: 1
+  ShieldProgressBar: {fileID: 0}
+  TestCurrentShield: 25
+  TestMaxShield: 50
   TestMinHealth: 0
   TestMaxHealth: 100
   TestCurrentHealth: 25

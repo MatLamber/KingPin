@@ -10072,6 +10072,9 @@ MonoBehaviour:
   TargetDamageResistanceProcessor: {fileID: 0}
   TargetAnimator: {fileID: 0}
   DisableAnimatorLogs: 1
+  InitialShield: 0
+  MaximumShield: 0
+  CurrentShield: 0
 --- !u!114 &114419784322626702
 MonoBehaviour:
   m_ObjectHideFlags: 0

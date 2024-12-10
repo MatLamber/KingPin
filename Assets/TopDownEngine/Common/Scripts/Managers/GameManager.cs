@@ -6,8 +6,11 @@ using MoreMountains.InventoryEngine;
 using MoreMountains.Feedbacks;
 
 
+
 namespace MoreMountains.TopDownEngine
 {
+	
+
 	/// <summary>
 	/// A list of the possible TopDown Engine base events
 	/// LevelStart : triggered by the LevelManager when a level starts
@@ -46,6 +49,9 @@ namespace MoreMountains.TopDownEngine
 		LoadNextScene,
 		PauseNoMenu
 	}
+	
+
+
 
 	/// <summary>
 	/// A type of events used to signal level start and end (for now)
